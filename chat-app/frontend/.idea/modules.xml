@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../chat-app-backend/.idea/chat-app.iml" filepath="$PROJECT_DIR$/../chat-app-backend/.idea/chat-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/finseed-data-frontend.iml" filepath="$PROJECT_DIR$/.idea/finseed-data-frontend.iml" />
+    </modules>
+  </component>
+</project>

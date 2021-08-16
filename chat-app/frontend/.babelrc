@@ -1,0 +1,24 @@
+{
+    "presets": ["next/babel"],
+    "plugins": [
+        ["styled-components", { "ssr": true, "displayName": true, "preprocess": false, "minify": true }],
+        ["@babel/plugin-proposal-decorators", { "decoratorsBeforeExport": true }],
+        ["@babel/plugin-proposal-class-properties", { "loose": true }],
+        ["@babel/plugin-proposal-optional-chaining"],
+        [
+            "module-resolver",
+            {
+                "root": ["./"],
+                "alias": {
+                    "@core": "./modules/core",
+                    "@FA": "./modules/FA"
+                }
+            }
+        ]
+    ],
+    "env": {
+        "production": {
+            "plugins": ["transform-react-remove-prop-types"] // Remove React propTypes from the production build
+        }
+    }
+}
