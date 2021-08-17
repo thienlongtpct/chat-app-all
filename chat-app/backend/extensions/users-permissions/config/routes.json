@@ -2,8 +2,8 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/users/",
-      "handler": "User.find",
+      "path": "/users/suggest-user/",
+      "handler": "User.suggestUser",
       "config": {
         "policies": []
       }

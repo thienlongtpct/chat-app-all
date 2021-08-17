@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogTitle, IconButton, InputBase, makeStyles } from '@material-ui/core';
+import { Dialog, DialogTitle, IconButton, InputBase, makeStyles, TextField } from '@material-ui/core';
 import { PersonAdd } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { getChatRoom, searchUsers } from '@core/chat-room/reducer';
+import Typography from '@material-ui/core/Typography';
 
 const addPersonPaperProps = {
     style: {
@@ -26,12 +27,12 @@ const useStyles = makeStyles((theme) => ({
     },
     user: {
         color: theme.palette.grey[300],
-
+        marginTop: theme.spacing(1),
+        padding: theme.spacing(2),
         '&:hover': {
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: theme.palette.primary.lighter,
             borderRadius: '5px'
-        },
-        padding: '10px'
+        }
     },
     title: {
         display: 'flex',
@@ -43,20 +44,28 @@ const useStyles = makeStyles((theme) => ({
             color: 'white'
         }
     },
+    userTitle: {
+        color: theme.palette.grey[500],
+        fontSize: '0.8rem',
+        fontWeight: 600
+    },
     input: {
-        marginBottom: '15px',
-        backgroundColor: theme.palette.primary.dark,
-        paddingLeft: '15px'
+        marginBottom: theme.spacing(3),
+        backgroundColor: theme.palette.primary.darker
     }
 }));
 
 const AddPerson = () => {
     const classes = useStyles();
-    const { searchedUsers } = useSelector((state) => getChatRoom(state));
+    const { searchedUsers = [] } = useSelector((state) => getChatRoom(state));
     const [dialog, setDialog] = useState(false);
 
-    const [chooseUserList, setChooseUserList] = useState([]);
+    const [chosenUsers, setChosenUsers] = useState([]);
     const dispatch = useDispatch();
+
+    // useEffect(() => {
+    //     dispatch(searchUsers({ keyword: '' }));
+    // }, [])
 
     const toggleDialog = () => {
         setDialog(!dialog);
@@ -67,6 +76,12 @@ const AddPerson = () => {
         dispatch(searchUsers({ keyword }));
     };
 
+    const handleChooseUser = (newUser) => {
+        if (chosenUsers.every((username) => username !== newUser)) setChosenUsers([...chosenUsers, newUser]);
+        else setChosenUsers([...chosenUsers].map((username) => username !== newUser));
+    };
+
+    console.log(searchedUsers);
     return (
         <>
             <IconButton onClick={toggleDialog} className={classes.root}>
@@ -74,15 +89,27 @@ const AddPerson = () => {
             </IconButton>
             <Dialog open={dialog} onClose={toggleDialog} PaperProps={addPersonPaperProps}>
                 <DialogTitle className={classes.title}>Add member</DialogTitle>
-                <InputBase placeholder="Search for users" onChange={searchForUsers} className={classes.input} />
+                <TextField
+                    variant="outlined"
+                    placeholder="Search for users"
+                    onChange={searchForUsers}
+                    className={classes.input}
+                />
                 <div>
-                    {chooseUserList.map((username) => {
+                    {chosenUsers.map((username) => {
                         return <div> {username} </div>;
                     })}
                 </div>
+                <Typography component="h6" className={classes.userTitle}>
+                    {`USERS - ${searchedUsers.length}`}
+                </Typography>
                 <div className={classes.userContainer}>
                     {searchedUsers.map((username) => {
-                        return <div className={classes.user}>{username}</div>;
+                        return (
+                            <div className={classes.user} onClick={(username) => handleChooseUser(username)}>
+                                {username}
+                            </div>
+                        );
                     })}
                 </div>
             </Dialog>

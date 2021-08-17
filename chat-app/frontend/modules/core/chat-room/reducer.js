@@ -21,13 +21,13 @@ export const addMessage = asyncAction('CHAT_ROOM/ADD_MESSAGE', async ({ content,
     const form = new FormData();
     form.append('content', content);
     form.append('id', id);
-    return axios.post(`${ENV_URL}messages/addMessage`, form, {
+    return axios.post(`${ENV_URL}messages/add-message`, form, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
 });
 
 export const searchUsers = asyncAction('CHAT_ROOM/SEARCH_USERS', async ({ keyword }) => {
-    return axios.get(`${ENV_URL}users`, {
+    return axios.get(`${ENV_URL}users/suggest-user`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         params: {
             username_contains: keyword
@@ -71,7 +71,7 @@ export default handleActions(
 
         [searchUsers.SUCCESS]: (state, { payload }) => ({
             ...state,
-            searchedUsers: payload?.data
+            searchedUsers: []
         }),
 
         [searchUsers.FAILURE]: (state) => ({

@@ -34,7 +34,7 @@
     },
     {
       "method": "POST",
-      "path": "/messages/addMessage",
+      "path": "/messages/add-message",
       "handler": "message.addMessage",
       "config": {
         "policies": []
