@@ -491,13 +491,13 @@ module.exports = {
 
       const user = await strapi.query('user', 'users-permissions').create(params);
       const chatApp = await strapi.query('user', 'users-permissions').findOne({ username: 'chat-app'}, []);
-      console.log(chatApp);
+
+      user.isOnline = true;
       const room = await strapi.services.room.create({
         name: 'Chat App',
         messages: [],
         users: [user, chatApp]
       });
-
 
       const message = await strapi.services.message.create({
         content: 'Welcome to Chat App',

@@ -50,10 +50,10 @@ const Message = ({ message: { user, content, createdAt, updatedAt } }) => {
             <img src="avatar/online-avatar.png" className={classes.avatar} alt="online" />
             <div>
                 <div className={classes.messageInfo}>
-                    <Typography variant="span" className={classes.username}>
+                    <Typography className={classes.username}>
                         {users.filter(({ id }) => id === user)[0].username}
                     </Typography>
-                    <Typography variant="span" className={classes.date}>
+                    <Typography className={classes.date}>
                         {moment(createdAt).calendar()}
                     </Typography>
                 </div>

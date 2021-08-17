@@ -53,6 +53,7 @@
         "eslint-plugin-react": "^7.19.0",
         "eslint-plugin-react-hooks": "^4.0.5",
         "prettier": "^2.3.2",
-        "prop-types": "^15.7.2"
+        "prop-types": "^15.7.2",
+        "socket.io-client": "^4.1.3"
     }
 }

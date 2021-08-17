@@ -15,9 +15,9 @@
       "type": "string"
     },
     "users": {
+      "via": "rooms",
       "plugin": "users-permissions",
       "collection": "user",
-      "via": "rooms",
       "dominant": true
     },
     "messages": {

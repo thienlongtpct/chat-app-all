@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core';
 import TypeBar from '@core/chat-room/components/TypeBar';
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MessageContainer = () => {
     const {
-        selectedRoom: { name = '???', messages = [] }
+        selectedRoom: { messages = [] }
     } = useSelector((state) => state.core.chatRoom);
     let currentDate = '';
     const classes = useStyles();
@@ -46,13 +46,13 @@ const MessageContainer = () => {
                     if (moment(message.createdAt).format('DD/MM/YYYY') !== currentDate) {
                         currentDate = moment(message.createdAt).format('DD/MM/YYYY');
                         return (
-                            <>
+                            <div key={message.createdAt}>
                                 <MessagePaginate content={moment(currentDate, 'DD/MM/YYYY').format('ll')} />
                                 <Message message={message} />
-                            </>
+                            </div>
                         );
                     }
-                    return <Message message={message} />;
+                    return <Message message={message} key={message.createdAt} />;
                 })}
             </div>
             <TypeBar />

@@ -66,6 +66,9 @@
     "messages": {
       "via": "user",
       "collection": "message"
+    },
+    "isOnline": {
+      "type": "boolean"
     }
   }
 }

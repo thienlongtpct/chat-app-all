@@ -5,7 +5,8 @@ import { ENV_URL } from '@core/chat-room/constants';
 import { createAction } from '@reduxjs/toolkit';
 
 const initial_state = {
-    selectedRoom: null
+    selectedRoom: null,
+    searchedUsers: []
 };
 
 export const clearRoom = createAction('CHAT_ROOM/CLEAR_ROOM');
@@ -25,6 +26,14 @@ export const addMessage = asyncAction('CHAT_ROOM/ADD_MESSAGE', async ({ content,
     });
 });
 
+export const searchUsers = asyncAction('CHAT_ROOM/SEARCH_USERS', async ({ keyword }) => {
+    return axios.get(`${ENV_URL}users`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        params: {
+            username_contains: keyword
+        }
+    });
+});
 export const getChatRoom = (state) => state?.core?.chatRoom;
 
 export default handleActions(
@@ -53,6 +62,26 @@ export default handleActions(
 
         [addMessage.FAILURE]: (state) => ({
             ...state
+        }),
+
+        [searchUsers.START]: (state) => ({
+            ...state,
+            searchedUsers: []
+        }),
+
+        [searchUsers.SUCCESS]: (state, { payload }) => ({
+            ...state,
+            searchedUsers: payload?.data
+        }),
+
+        [searchUsers.FAILURE]: (state) => ({
+            ...state,
+            searchedUsers: []
+        }),
+
+        'CHAT_ROOM/CLEAR_ROOM': (state) => ({
+            ...state,
+            selectedRoom: null
         })
     },
     initial_state

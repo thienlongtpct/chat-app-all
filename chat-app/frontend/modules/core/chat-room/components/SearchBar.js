@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { InputBase, makeStyles, Paper } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import { getAuthData, searchRoom } from '@core/auth/reducer';
@@ -24,16 +24,24 @@ const useStyles = makeStyles((theme) => ({
 const SearchBar = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+
+    const [keyword, setKeyword] = useState('');
     const { rooms } = useSelector((state) => getAuthData(state)?.user);
+    const { searchedRooms } = useSelector((state) => getAuthData(state));
+
+    useEffect(() => {
+        if (rooms.filter((room) => room.name.includes(keyword)).length < searchedRooms.length) setKeyword('');
+    }, [searchedRooms]);
 
     const getSuggestion = (event) => {
+        setKeyword(event.target.value);
         const searchedRooms = rooms.filter((room) => room.name.includes(event.target.value));
         dispatch(searchRoom({ searchedRooms }));
     };
 
     return (
         <Paper component="form" className={classes.root}>
-            <InputBase className={classes.input} placeholder="Search room" onChange={getSuggestion} />
+            <InputBase className={classes.input} placeholder="Search room" onChange={getSuggestion} value={keyword} />
             <Search />
         </Paper>
     );

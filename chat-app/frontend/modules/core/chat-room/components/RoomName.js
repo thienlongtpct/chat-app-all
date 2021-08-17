@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
     },
     roomName: {
         padding: theme.spacing(2),
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: '0.9rem'
     }
 }));
 

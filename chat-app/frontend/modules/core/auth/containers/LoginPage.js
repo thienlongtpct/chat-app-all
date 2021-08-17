@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { Button, makeStyles, TextField } from '@material-ui/core';
 import Link from 'next/link';
 import { fetchMe, fetchToken, getAuthData, logout } from '../reducer';
+import { socket } from '../../../../config/web-sockets';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -77,11 +78,12 @@ const LoginPage = () => {
     };
 
     useEffect(() => {
-        if (userError) dispatch(logout());
+        if (userError) dispatch(logout(''));
         else if (localStorage.getItem('token')) router.push('/chat-room').then();
         else if (token) {
             router.push('/chat-room').then();
             localStorage.setItem('token', token);
+            socket.emit('join', { username }, (error) => alert(error));
         } else dispatch(fetchMe());
     }, [token]);
 

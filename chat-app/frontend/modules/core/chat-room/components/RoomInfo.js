@@ -3,6 +3,7 @@ import { makeStyles, AppBar, Toolbar, Typography } from '@material-ui/core';
 import ChatIcon from '@material-ui/icons/Chat';
 import { useSelector } from 'react-redux';
 import { getChatRoom } from '@core/chat-room/reducer';
+import AddPerson from '@core/chat-room/components/AddPerson';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,6 +33,7 @@ const RoomInfo = () => {
                 <Typography variant="h3" className={classes.title}>
                     {name}
                 </Typography>
+                <AddPerson />
             </Toolbar>
         </AppBar>
     );

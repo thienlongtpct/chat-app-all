@@ -9,6 +9,7 @@ import Container from '@material-ui/core/Container';
 import { useRouter } from 'next/router';
 import { clearRoom } from '@core/chat-room/reducer';
 import AddRoom from '@core/chat-room/components/AddRoom';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,6 +18,11 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.primary.dark,
         height: '100vh',
         padding: theme.spacing(2)
+    },
+    bar: {
+        display: 'flex',
+        alignItems: 'center',
+        color: theme.palette.text.primary
     },
     list: {
         flex: 1,
@@ -28,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
         /* Hide scrollbar for IE, Edge and Firefox */
         scrollbarWidth: 'none',
         msOverflowStyle: 'none'
+    },
+    title: {
+        color: theme.palette.grey[500],
+        fontSize: '0.8rem',
+        fontWeight: 600,
+        justifyContent: 'space-between'
     }
 }));
 
@@ -37,22 +49,24 @@ const RoomList = () => {
     const router = useRouter();
 
     const { searchedRooms } = useSelector((state) => getAuthData(state));
+    const { username } = useSelector((state) => getAuthData(state)?.user);
 
     const handleLogout = () => {
         router.push('/login').then();
-        dispatch(logout());
+        dispatch(logout({ username }));
         dispatch(clearRoom());
     };
 
     return (
         <Grid item sm={4} md={3} lg={2} className={classes.root}>
-            <div className={classes.bar}>
-                <SearchBar />
+            <SearchBar />
+            <Typography component="h6" className={classes.title}>
+                {`CHAT ROOM - ${searchedRooms.length}`}
                 <AddRoom />
-            </div>
+            </Typography>
             <Container component="div" className={classes.list} disableGutters>
                 {searchedRooms.map((room) => (
-                    <RoomName room={room} />
+                    <RoomName room={room} key={room.id} />
                 ))}
             </Container>
             <Button variant="contained" color="secondary" onClick={handleLogout}>

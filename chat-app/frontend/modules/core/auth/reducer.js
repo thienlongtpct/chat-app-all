@@ -4,6 +4,7 @@ import { handleActions } from 'redux-actions';
 import { AUTH_ME, AUTH_REGISTER, AUTH_TOKEN } from '@core/auth/constants';
 import { createAction } from '@reduxjs/toolkit';
 import { ENV_URL } from '@core/chat-room/constants';
+import { socket } from '../../../config/web-sockets';
 
 const initial_state = {
     token: null,
@@ -44,8 +45,9 @@ export const fetchMe = asyncAction('AUTH/FETCH_ME', async () => {
     });
 });
 
-export const logout = createAction('AUTH/LOGOUT', () => {
+export const logout = createAction('AUTH/LOGOUT', ({ username }) => {
     localStorage.setItem('token', '');
+    if (username) socket.emit('logout', { username });
     return {};
 });
 
@@ -54,6 +56,8 @@ export const searchRoom = createAction('AUTH/SEARCH_ROOM', ({ searchedRooms }) =
         searchedRooms
     }
 }));
+
+export const resetSearchedRooms = createAction('AUTH/RESET_SEARCHED_ROOMS');
 
 export const addRoom = asyncAction('CHAT_ROOM/ADD_ROOM', async ({ name }) => {
     const form = new FormData();
@@ -144,6 +148,11 @@ export default handleActions(
         'AUTH/SEARCH_ROOM': (state, { payload }) => ({
             ...state,
             searchedRooms: payload?.searchedRooms
+        }),
+
+        'AUTH/RESET_SEARCHED_ROOMS': (state) => ({
+            ...state,
+            searchedRooms: state.user.rooms
         }),
 
         'AUTH/LOGOUT': (state) => ({

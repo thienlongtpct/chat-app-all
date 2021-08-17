@@ -58,8 +58,7 @@ const TypeBar = () => {
                 placeholder="Write Message"
                 type="submit"
                 variant="outlined"
-                color="textPrimary"
-                tabindex="-1"
+                tabIndex="-1"
                 onChange={(event) => event.target.value !== '\n' && setContent(event.target.value)}
                 onKeyDown={handleKeyDown}
                 className={classes.input}

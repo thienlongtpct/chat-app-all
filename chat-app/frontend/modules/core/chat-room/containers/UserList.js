@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import UserStatus from '@core/chat-room/components/UserStatus';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import { useSelector } from 'react-redux';
 import { getChatRoom } from '@core/chat-room/reducer';
 import PropTypes from 'prop-types';
+import { socket } from '../../../../config/web-sockets';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,8 +32,8 @@ const UserPaginate = ({ title, users }) => {
             <Typography component="h6" className={classes.title}>
                 {`${title} - ${users.length}`}
             </Typography>
-            {users.map(({ username, isOnline }) => (
-                <UserStatus username={username} isOnline={isOnline} />
+            {users.map(({ username, id }) => (
+                <UserStatus username={username} isOnline={title === 'ONLINE'} key={id} />
             ))}
         </Container>
     );
@@ -45,19 +46,50 @@ UserPaginate.defaultProps = {
 
 UserPaginate.propTypes = {
     title: PropTypes.string,
-    users: PropTypes.object
+    users: PropTypes.array
 };
 
 const UserList = () => {
     const classes = useStyles();
+
     const {
-        selectedRoom: { users }
+        selectedRoom: { users: initialUsers }
     } = useSelector((state) => getChatRoom(state));
+
+    const [newLoginUsers, setNewLoginUsers] = useState([]);
+    const [newLogoutUsers, setNewLogoutUsers] = useState([]);
+
+    useEffect(async () => {
+        console.log('socket change');
+        await socket.on('newLogin', ({ username }) => {
+            setNewLoginUsers([...newLoginUsers, username]);
+            setNewLogoutUsers([...newLogoutUsers].filter((user) => user.username !== username));
+        });
+        await socket.on('newLogout', ({ username }) => {
+            console.log(username);
+            setNewLogoutUsers([...newLogoutUsers, username]);
+            setNewLoginUsers([...newLoginUsers].filter((user) => user.username !== username));
+        });
+    }, [socket]);
+
     return (
         <Grid item lg={2} className={classes.root}>
-            <UserPaginate title="ONLINE" users={users} />
-            {/* <UserPaginate title="ONLINE" users={users.filter((user) => user.isOnline)} /> */}
-            {/* <UserPaginate title="OFFLINE" users={users.filter((user) => !user.isOnline)} /> */}
+            <UserPaginate
+                title="ONLINE"
+                users={initialUsers.filter(
+                    (user) =>
+                        (user.isOnline || newLoginUsers.includes(user.username)) &&
+                        !newLogoutUsers.includes(user.username)
+                )}
+            />
+            <UserPaginate
+                title="OFFLINE"
+                users={initialUsers.filter(
+                    (user) =>
+                        (!user.isOnline || newLogoutUsers.includes(user.username)) &&
+                        !newLoginUsers.includes(user.username)
+                )}
+            />
         </Grid>
     );
 };

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogTitle, IconButton, makeStyles, Paper, TextField } from '@material-ui/core';
-import { AddBox } from '@material-ui/icons';
+import { Add } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { addRoom, getAuthData } from '@core/auth/reducer';
+import { addRoom, getAuthData, resetSearchedRooms } from '@core/auth/reducer';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '5px',
         width: '100%',
         padding: '0px'
+    },
+    icon: {
+        color: theme.palette.primary.contrastText
     }
 }));
 
@@ -47,13 +50,13 @@ const addRoomPaperProps = {
 const AddRoom = () => {
     const dispatch = useDispatch();
 
-    const { searchedRooms } = useSelector((state) => getAuthData(state));
     const [dialogOpen, setDialogOpen] = useState(false);
     const [name, setName] = useState('');
 
     const classes = useStyles();
 
     const toggleDialog = () => {
+        if (!dialogOpen) dispatch(resetSearchedRooms());
         setDialogOpen(!dialogOpen);
     };
 
@@ -65,8 +68,8 @@ const AddRoom = () => {
 
     return (
         <>
-            <IconButton onClick={toggleDialog}>
-                <AddBox />
+            <IconButton onClick={toggleDialog} className={classes.icon}>
+                <Add />
             </IconButton>
             <Dialog open={dialogOpen} onClose={toggleDialog} PaperProps={addRoomPaperProps}>
                 <DialogTitle className={classes.title}>Create New Room</DialogTitle>
